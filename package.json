@@ -1,0 +1,17 @@
+{
+  "name": "md-share",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "lz-string": "^1.5.0",
+    "marked": "^12.0.2"
+  }
+}
