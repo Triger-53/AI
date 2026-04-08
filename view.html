@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Content — MDShare</title>
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+</head>
+<body class="view-page">
+    <div class="bg-glow"></div>
+    <nav class="view-nav">
+        <a href="index.html" class="view-logo"><span class="logo-icon">◆</span> MDShare</a>
+        <a href="index.html" class="btn-create">+ Create New</a>
+    </nav>
+
+    <main id="main-content">
+        <div id="view-error" class="view-error" style="display:none">
+            <h1 id="error-title">No Content Found</h1>
+            <p id="error-desc">This link doesn't contain any markdown content.</p>
+            <a href="index.html" class="btn-home">← Create New</a>
+        </div>
+        <article id="content-render" class="view-content markdown-body" style="display:none"></article>
+    </main>
+
+    <footer class="view-footer">
+        <p>Shared via <a href="index.html">MDShare</a> · No server storage</p>
+    </footer>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const compressed = urlParams.get('c');
+            const renderEl = document.getElementById('content-render');
+            const errorEl = document.getElementById('view-error');
+
+            if (!compressed) {
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const md = LZString.decompressFromEncodedURIComponent(compressed);
+                if (!md) throw new Error("Decompression failed");
+
+                renderEl.innerHTML = marked.parse(md);
+                renderEl.style.display = 'block';
+
+                // Update title based on first heading
+                const m = md.match(/^#{1,3}\s+(.+)$/m);
+                if (m) document.title = m[1].trim() + " — MDShare";
+            } catch (e) {
+                errorEl.style.display = 'block';
+                document.getElementById('error-title').innerText = "Invalid Link";
+                document.getElementById('error-desc').innerText = "This link appears to be corrupted.";
+            }
+        })();
+    </script>
+</body>
+</html>

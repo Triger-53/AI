@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDShare — Paste & Share Markdown</title>
+    <meta name="description" content="Paste markdown, get a link for Google Illuminate. Fast, private, and no-server.">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS (Linking the styles we'll create) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Libraries via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="app">
+        <header class="header">
+            <div class="logo"><span class="logo-icon">◆</span><h1>MDShare</h1></div>
+            <p class="tagline">Paste your Markdown · Get a shareable link · Feed it to Illuminate</p>
+        </header>
+
+        <main>
+            <div class="editor-wrap">
+                <div class="tab-bar">
+                    <div class="tab-btns">
+                        <button id="tab-edit" class="tab active">✏️ Editor</button>
+                        <button id="tab-preview" class="tab">👁 Preview</button>
+                    </div>
+                    <div class="editor-meta">
+                        <span id="char-count" class="char-count">0 chars</span>
+                        <span id="url-indicator" class="url-size ok" style="display:none">~0.0KB</span>
+                    </div>
+                </div>
+
+                <div class="editor-body">
+                    <textarea id="markdown-input" class="editor-textarea" placeholder="# Paste your markdown here...&#10;&#10;Start typing or paste content.&#10;It gets compressed into a shareable URL." spellcheck="false"></textarea>
+                    <div id="preview-pane" class="preview-pane markdown-body desk-show">
+                        <p class="empty">Preview appears here…</p>
+                    </div>
+                </div>
+
+                <div class="editor-actions">
+                    <p id="url-error" class="url-error" style="display:none">⚠️ Content too long for URL encoding. Please shorten.</p>
+                    <button id="gen-btn" class="btn-gen" disabled>
+                        <span class="sparkle">✦</span> Generate Link
+                    </button>
+                </div>
+            </div>
+
+            <section id="links-section" class="links-section" style="display:none">
+                <div class="links-header">
+                    <h2><span>🔗</span> Your Links <span id="link-badge" class="link-count">0</span></h2>
+                    <button id="clear-btn" class="btn-clear">Clear All</button>
+                </div>
+                <div id="links-list" class="links-list">
+                    <!-- Links injected here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Built for <a href="https://illuminate.google.com" target="_blank">Google Illuminate</a> · Content lives in the URL</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
