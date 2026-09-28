@@ -1,0 +1,11 @@
+{
+  "source": "https://github.com/risan/quran-json",
+  "download_url": "https://raw.githubusercontent.com/risan/quran-json/main/dist/quran.json",
+  "retrieved": "2026-09-28",
+  "sha256": "d8a8adff387f60ce3ff7dbe3238dd9b27120bfe29d8fcb07ad2e89cad37cefd4",
+  "chapters": 114,
+  "verses": 6236,
+  "license": "CC-BY-SA-4.0",
+  "modified": false,
+  "review_status": "Upstream dataset; independent teacher review pending"
+}
