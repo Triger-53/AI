@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="A quiet Qur’an recitation practice space with English or Arabic guidance.">
+  <title>Qur’an Janab · Practice</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b5546'/%3E%3Cpath d='M14 17q10-4 18 2 8-6 18-2v30q-10-4-18 3-8-7-18-3zM32 19v31' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css"><script defer src="./app.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brandmark">۞</span><span>Qur’an Janab</span></div><div class="top-actions"><span id="modeBadge" class="pill">DEMO MODE</span><button id="settingsButton" class="icon-button" aria-label="Settings" title="Settings">⚙</button></div></header>
+  <main class="shell">
+    <aside class="side">
+      <div class="eyebrow" data-en="YOUR PRACTICE" data-ar="تدريبك">YOUR PRACTICE</div>
+      <h1 data-en="Read with care." data-ar="تلاوةٌ بتأنٍّ.">Read with care.</h1>
+      <p class="intro" data-en="Choose a passage, then practise at your pace." data-ar="اختر مقطعًا، ثم تدرّب بالوتيرة التي تناسبك.">Choose a passage, then practise at your pace.</p>
+      <label for="search" data-en="Choose a surah" data-ar="اختر سورة">Choose a surah</label>
+      <input id="search" type="search" placeholder="Search name or number" autocomplete="off">
+      <div id="chapterList" class="chapter-list" aria-label="Surahs"></div>
+      <div class="footnote">Qur’an text: Tanzil · 114 surahs, 6,236 ayat<br><a href="./assets/TANZIL-NOTICE.txt">Text notice</a> · <a href="./assets/CORPUS-LICENSE.txt">Corpus license</a> · <a href="./assets/OFL.txt">Font license</a></div>
+    </aside>
+    <section class="workspace" aria-label="Recitation practice">
+      <div class="workspace-head"><div><div id="surahNumber" class="eyebrow">SURAH 01</div><h2 id="surahName">Al-Fatihah</h2><div id="surahArabic" class="surah-arabic" lang="ar" dir="rtl">الفاتحة</div></div><div class="chapter-count" id="chapterCount">7 ayat</div></div>
+      <div class="controls"><div class="range"><label for="startAyah" data-en="From ayah" data-ar="من الآية">From ayah</label><select id="startAyah"></select></div><div class="range"><label for="endAyah" data-en="To ayah" data-ar="إلى الآية">To ayah</label><select id="endAyah"></select></div><div class="range"><label for="language" data-en="Guidance" data-ar="لغة التوجيه">Guidance</label><select id="language"><option value="en">English</option><option value="ar">العربية</option></select></div></div>
+      <div class="reading-head"><span data-en="SELECTED PASSAGE" data-ar="المقطع المختار">SELECTED PASSAGE</span><span id="reference">1:1–7</span></div>
+      <div id="verses" class="verses" dir="rtl" lang="ar"></div>
+      <div class="session-panel"><div class="session-status"><span id="statusDot" class="status-dot"></span><div><strong id="sessionTitle">Ready to practise</strong><p id="sessionDetail">Demo lets you explore without a microphone.</p></div></div><div class="session-buttons"><button id="demoButton" class="button secondary">Explore demo</button><button id="liveButton" class="button primary">Start live practice</button><button id="retryButton" class="button secondary hidden">Try again</button><button id="stopButton" class="button stop hidden">End session</button></div></div>
+      <div id="reviewPanel" class="review hidden" role="status" aria-live="assertive"></div>
+      <p class="caution" data-en="Live feedback is experimental and checks a transcript. It may mishear you and cannot confirm tajwid or every recitation mistake." data-ar="التوجيه المباشر تجريبي ويعتمد على النص المنسوخ. قد يسيء السمع ولا يؤكد أحكام التجويد أو جميع أخطاء التلاوة.">Live feedback is experimental and checks a transcript. It may mishear you and cannot confirm tajwid or every recitation mistake.</p>
+    </section>
+  </main>
+  <dialog id="settings"><form method="dialog" id="settingsForm"><div class="modal-head"><h2 data-en="Live connection" data-ar="الاتصال المباشر">Live connection</h2><button class="icon-button" value="cancel" aria-label="Close">×</button></div><p data-en="For live practice, connect your own backend. The OpenAI API key stays on that server." data-ar="للتدريب المباشر، صِل خادمك الخاص. يبقى مفتاح OpenAI على الخادم.">For live practice, connect your own backend. The OpenAI API key stays on that server.</p><label for="backendUrl">Backend HTTPS URL</label><input id="backendUrl" type="url" placeholder="https://your-api.example.com" spellcheck="false"><label for="accessToken">Backend access token</label><input id="accessToken" type="password" autocomplete="off" placeholder="Your app access token"><small data-en="The token is held in this tab only and is cleared when it closes." data-ar="يُحفظ رمز الوصول في علامة التبويب هذه فقط ويُمسح عند إغلاقها.">The token is held in this tab only and is cleared when it closes.</small><button id="saveSettings" class="button primary" value="save">Use connection</button></form></dialog>
+</body></html>

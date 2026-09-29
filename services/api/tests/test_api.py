@@ -1,5 +1,6 @@
 import asyncio
 import pytest
+from starlette.websockets import WebSocketDisconnect
 from fastapi.testclient import TestClient
 from app import main
 from app.prompts import tutor_prompt, review_instruction
@@ -87,7 +88,24 @@ def test_live_payload_and_stop(client, monkeypatch):
     assert 'بِسۡمِ' in payload['session']['input'][0]['content'][0]['text']
     assert client.post('/sessions', json=request(), headers=headers).status_code == 409
     sid = response.json()['id']
+    ticket = response.json()['browser_ticket']
+    assert len(ticket) >= 24
+    assert ticket != TOKEN
+    assert 'test-key-not-real' not in ticket
     assert client.post(f'/sessions/{sid}/end', headers=headers).json()['finalization_confirmed']
+
+
+def test_browser_event_ticket_is_single_use(client):
+    from app.verifier import SequenceTracker
+    from app.corpus import passage
+    practice = main.Practice('browser-test', 'provider-test', 'en', SequenceTracker(passage(1, 1, 1)))
+    main.sessions[practice.id] = practice
+    with client.websocket_connect(f'/sessions/browser-test/events?ticket={practice.browser_ticket}') as ws:
+        assert practice.browser_ticket == ''
+        ws.send_text('{"type":"end"}')
+    with pytest.raises(WebSocketDisconnect):
+        with client.websocket_connect('/sessions/browser-test/events?ticket=invalid'):
+            pass
 
 
 def test_websocket_rejects_missing_auth(client):

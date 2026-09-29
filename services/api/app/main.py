@@ -1,3 +1,4 @@
+import sys; import os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import asyncio
 import contextlib
 import json
@@ -12,6 +13,7 @@ from urllib.parse import quote
 
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 from websockets.asyncio.client import connect
@@ -45,6 +47,7 @@ class Practice:
     finalization_confirmed: bool = False
     socket_connected: bool = False
     epoch: int = 0
+    browser_ticket: str = field(default_factory=lambda: secrets.token_urlsafe(32))
 
     async def emit(self, event):
         event = dict(event, epoch=self.epoch, observed_at=time.monotonic())
@@ -85,7 +88,11 @@ async def lifespan(app):
         await asyncio.gather(*pending, return_exceptions=True)
 
 
-app = FastAPI(title='Qur’an Janab AI', version='0.1.0', lifespan=lifespan)
+app = FastAPI(title='Qur’an Janab AI', version='0.1.0', lifespan=lifespan, root_path='/api')
+origins = [origin.strip() for origin in os.getenv('WEB_ORIGINS', '').split(',') if origin.strip()]
+if origins:
+    app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=['GET', 'POST'],
+                       allow_headers=['Authorization', 'Content-Type'])
 
 
 @app.get('/health')
@@ -227,7 +234,7 @@ async def create_session(request: SessionRequest):
         practice = Practice(secrets.token_urlsafe(24), provider_id, request.language, SequenceTracker(words))
         sessions[practice.id] = practice
         practice.task = asyncio.create_task(run_sideband(practice))
-    return {'id': practice.id, 'transport': {'sdp': answer},
+    return {'id': practice.id, 'browser_ticket': practice.browser_ticket, 'transport': {'sdp': answer},
             'assessment': 'experimental_transcript_only'}
 
 
@@ -251,13 +258,19 @@ async def end_session(sid: str):
 @app.websocket('/sessions/{sid}/events')
 async def session_events(websocket: WebSocket, sid: str):
     auth = websocket.headers.get('authorization', '')
-    if not auth.startswith('Bearer ') or not authorized(auth[7:]) or sid not in sessions:
+    practice = sessions.get(sid)
+    ticket = websocket.query_params.get('ticket', '')
+    header_ok = auth.startswith('Bearer ') and authorized(auth[7:])
+    ticket_ok = bool(practice and practice.browser_ticket and ticket and
+                     secrets.compare_digest(practice.browser_ticket, ticket))
+    if practice is None or not (header_ok or ticket_ok):
         await websocket.close(code=1008)
         return
-    practice = sessions[sid]
     if practice.socket_connected:
         await websocket.close(code=1008)
         return
+    if ticket_ok:
+        practice.browser_ticket = ''  # One connection only; never reusable.
     practice.socket_connected = True
     await websocket.accept()
 
