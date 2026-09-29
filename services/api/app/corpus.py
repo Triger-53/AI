@@ -5,7 +5,7 @@ import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-ASSETS = ROOT / 'apps/mobile/assets'
+ASSETS = ROOT / 'assets'
 
 
 def normalize(text: str) -> str:
